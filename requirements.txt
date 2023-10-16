@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+datasets
+transformers
+torch
+ffmpeg
+setuptools-rust
+scipy
+TTS
+accelerate
+optimum
+python-multipart
+typing_extensions
