@@ -1,58 +1,39 @@
 # advanced-voice-processing
 
 ## Preparation
+1. Python3
+2. Virtual env
+3. CMake
+4. NodeJS & npm 
+5. GPU for inference
 
-step 0. add submodules if not exists
-```
-git submodule add https://github.com/coqui-ai/TTS.git externals/tts/
-```
 
-step 1. Pull submodule
 
-```
-git submodule update --init
-git submodule update --recursive --remote
-git pull --recurse-submodules
-```
-
-step 2. Build docker image tts
-```
-cd externals/tts/
-make system-deps  # only on Linux systems.
-make install
-```
-
-step 3. Download speaker you want to clone or make it yourself to  `bark_voices/speaker_n/` directory
+### Start server if CMake wasn't installed.
 
 ```
-https://huggingface.co/datasets/hf-internal-testing/librispeech_asr_dummy
+$ python3 -m venv env
+$ . env/bin/activate
+$ pip install -r requirements.txt
+$ uvicorn main:app --reload
 ```
 
-
-### Run by docker options
-
-start docker
+If CMake already install
 ```
-docker run --rm -it -p 5002:5002 --gpus all --entrypoint /bin/bash ghcr.io/coqui-ai/tts
-python3 TTS/server/server.py --list_models #To get the list of available models
-python3 TTS/server/server.py --model_name tts_models/en/vctk/vits --use_cuda true
-
+$ make start
 ```
 
+### Start web ui
 
-
-### Run by code options
-step 0. add submodules if not exists
+To install NodeJS & NVM 
 ```
-git submodule add https://github.com/coqui-ai/TTS.git externals/tts/
-```
-
-step 1. Pull submodule
-
-```
-git submodule update --init
-git submodule update --recursive --remote
-git pull --recurse-submodules
+$ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
+$ nvm install --lts
 ```
 
-step 2. Active virtual 
+Install packages
+
+```
+$ npm install -g @angular/cli
+$ npm install --save-dev
+```

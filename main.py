@@ -3,6 +3,7 @@ from pathlib import Path
 from entities.request_model import RequestModel
 from fastapi import FastAPI, Request, Form, UploadFile
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from controllers.text_to_speech import text_to_speech
 from controllers.voice_clone import voice_clone
 from controllers.voice_recognize import voice_recognize
@@ -15,6 +16,16 @@ from scipy.io import wavfile
 
 
 app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 tmp_file_dir = "/tmp/example-files"
 Path(tmp_file_dir).mkdir(parents=True, exist_ok=True)
 
