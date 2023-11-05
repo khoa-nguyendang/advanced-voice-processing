@@ -36,13 +36,15 @@ export class AudioTranscribeComponent {
 
             const upload$ = this.http.post("/voice-recognize", formData);
 
-            upload$.subscribe((res: any) => {
-                console.log(res);
-                this.text_result = res.data[0];
-            },
-            (error) => {
-                console.log(error)
-              });
+            upload$.subscribe({
+                next: (res: any) => {
+                    console.log(res);
+                    this.text_result = res.data[0];
+                },
+                error: (error: any) => {
+                    console.log(error)
+                }
+            });
         }
     }
 }
