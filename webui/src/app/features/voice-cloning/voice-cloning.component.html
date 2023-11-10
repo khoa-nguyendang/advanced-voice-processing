@@ -6,6 +6,36 @@
     </div>
 
     <div class="container page">
+        <h5>Select audio file (WAV extension) , then system will be clone it to a target voice.</h5>
 
+        <label>Target Audio</label>
+        <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+        <div class="file-upload">
+            {{fileName || "No target audio uploaded yet."}}
+            <button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+        </div>
+        <br/>
+        <br/>
+        <label>Speaker Audio</label>
+        <input type="file" class="file-input" (change)="onFileSpeakerSelected($event)" #fileUploadSpeaker>
+        <div class="file-upload">
+            {{fileNameSpeaker || "No speaker audio uploaded yet."}}
+            <button mat-mini-fab color="primary" class="upload-btn" (click)="fileUploadSpeaker.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+        </div>
+        <br/>
+        <br/>
+        <button class="btn btn-primary" (click)="onSubmit($event)" type="button" [disabled]="processing">{{processing ? 'Processing' : 'Start Clone'}}</button>
+        <br/>
+        <br/>
+        <h4>Result</h4>
+        <br/>
+        <audio id="audio_result" controls #audioResult></audio>
+        <div *ngIf="errorMessage && errorMessage.length > 0">
+            ERROR: {{errorMessage}}
+        </div>
     </div>
 </div>

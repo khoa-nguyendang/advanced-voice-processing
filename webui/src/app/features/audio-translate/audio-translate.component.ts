@@ -20,7 +20,6 @@ import { ArticleListComponent } from 'src/app/shared/article-helpers/article-lis
 })
 export class AudioTranslateComponent {
     fileName = '';
-    audioContext = new AudioContext();
     errorMessage = '';
     processing = false;
     @ViewChild('audioResult') audioResult: ElementRef<HTMLAudioElement> | undefined;
@@ -34,44 +33,22 @@ export class AudioTranslateComponent {
         if (file) {
             this.processing = true;
             this.fileName = file.name;
-
             const formData = new FormData();
-
             formData.append("file", file);
             formData.append("speaker", "khoaspeech");
-
             const upload$ = this.http.post("/voice-translate", formData, {
                 responseType: 'blob'
             });
 
             upload$.subscribe({
-                next: (res: any) => {
-                    this.onReceivedBlob(res);
-                },
+                next: (res: any) => { this.playBlob(res); },
                 error: (error: any) => {
                     console.log(error)
                     this.errorMessage = error;
+                    this.processing = false;
                 },
-                complete: () => { this.processing = false;}
+                complete: () => { this.processing = false; }
             });
-        }
-    }
-
-    onReceivedBlob(blob: Blob) {
-        try {
-            const audio = document.getElementById('audio_result') as HTMLAudioElement;
-            // audio.src = URL.createObjectURL(blob);
-            // audio.play();
-            // return;
-            let fileReader = new FileReader();
-            let arrayBuffer: ArrayBuffer;
-            fileReader.onloadend = () => {
-                arrayBuffer = fileReader.result as ArrayBuffer;
-                this.audioContext.decodeAudioData(arrayBuffer, this.playSound.bind(this), this.onErrorReceivingBuffer.bind(this));
-            }
-            fileReader.readAsArrayBuffer(blob);
-        } catch (ex) {
-            console.log(ex);
         }
     }
 
@@ -79,15 +56,10 @@ export class AudioTranslateComponent {
         this.errorMessage = err;
     }
 
-    playSound(buffer: AudioBuffer) {
+    playBlob(blob: Blob) {
         let el = this.audioResult?.nativeElement as HTMLAudioElement;
-        let elementSource = this.audioContext.createMediaElementSource(el);
-        elementSource.connect(this.audioContext.destination);
-
-        let source = this.audioContext.createBufferSource(); // creates a sound source
-        source.buffer = buffer;                    // tell the source which sound to play
-        source.connect(this.audioContext.destination);       // connect the source to the context's destination (the speakers)
-
-        source.start(0);                          // play the source now
+        el.src = URL.createObjectURL(blob);
+        el.load();
+        el.play();
     }
 }

@@ -1,13 +1,25 @@
 <div class="home-page">
-  <div class="banner">
-    <div class="container">
-      <h4 class="logo-font">Text To Speech</h4>
+    <div class="banner">
+        <div class="container">
+            <h4 class="logo-font">Text To Speech</h4>
+        </div>
     </div>
-  </div>
 
-  <div class="container page">
-    <h4>Text want to play</h4>
+    <div class="container page">
+        <h4>Text want to play</h4>
+        <br />
+        <textarea style="width: 720px;height: 120px;">{{text_result}}</textarea>
         <br/>
-        <textarea>{{text_result}}</textarea>
-  </div>
+        <br/>
+        <div *ngIf="processing">
+            <p>Processing...</p>
+        </div>
+        <br/>
+        <h4>Result</h4>
+        <br/>
+        <audio id="audio_result" controls #audioResult></audio>
+        <div *ngIf="errorMessage && errorMessage.length > 0">
+            ERROR: {{errorMessage}}
+        </div>
+    </div>
 </div>

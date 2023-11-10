@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass, NgForOf } from '@angular/common';
+import { AsyncPipe, CommonModule, NgClass, NgForOf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,20 +14,22 @@ import { ArticleListComponent } from 'src/app/shared/article-helpers/article-lis
     ArticleListComponent,
     AsyncPipe,
     NgForOf,
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ],
 })
 export class AudioTranscribeComponent {
     fileName = '';
     text_result = '';
+    processing = false;
     constructor(private http: HttpClient) {}
 
     onFileSelected(event: any) {
 
         const file:File = event.target.files[0];
-
+        
         if (file) {
-
+            this.processing = true;
             this.fileName = file.name;
 
             const formData = new FormData();
@@ -42,8 +44,10 @@ export class AudioTranscribeComponent {
                     this.text_result = res.data[0];
                 },
                 error: (error: any) => {
-                    console.log(error)
-                }
+                    console.log(error);
+                    this.processing = false;
+                },
+                complete: () => {this.processing = false;}
             });
         }
     }

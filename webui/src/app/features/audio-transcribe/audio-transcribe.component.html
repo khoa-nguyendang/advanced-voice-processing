@@ -19,9 +19,12 @@
 
         <br/>
         <br/>
+        <div *ngIf="processing">
+            <p>Processing...</p>
+        </div>
         <br/>
         <h4>Result</h4>
         <br/>
-        <textarea>{{text_result}}</textarea>
+        <span  style="width: 720px;height: 120px;"><p>{{text_result}}</p></span>
     </div>
 </div>
