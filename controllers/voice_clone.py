@@ -32,5 +32,3 @@ def voice_clone(input: str, speaker: str):
     # speech_output = tts.tts(text=input, language="en", speaker_wav=speaker)
     tts.tts_to_file(text=input, speaker_wav=speaker, language="en", file_path=file_output)
     return file_output
-
-
