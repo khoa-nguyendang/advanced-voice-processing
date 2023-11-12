@@ -11,3 +11,4 @@ accelerate
 optimum
 python-multipart
 typing_extensions
+torchaudio

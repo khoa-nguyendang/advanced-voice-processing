@@ -44,7 +44,7 @@ export class VoiceCloningComponent {
         this.processing = true;
         const formData = new FormData();
         formData.append("file", this.audioFile);
-        formData.append("speakerFile", this.speakerAudioFile);
+        formData.append("speaker", this.speakerAudioFile);
         const upload$ = this.http.post("/voice-clone", formData, {
             responseType: 'blob'
         });
