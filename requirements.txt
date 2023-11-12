@@ -6,7 +6,7 @@ torch
 ffmpeg
 setuptools-rust
 scipy
-TTS
+TTS==0.20.1
 accelerate
 optimum
 python-multipart

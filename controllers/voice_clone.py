@@ -17,21 +17,20 @@
 from TTS.api import TTS
 import torch
 import os 
-# from IPython.display import Audio
-# from scipy.io.wavfile import write
-# import numpy as np
-
+from scipy.io.wavfile import write as write_wav
 import os 
 import uuid
  
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
-text = "Hello, my name is Manmay , how are you?"
-PATH = os.path.abspath("../models/text_2.pt")
-tts = TTS(PATH).to(device)
+tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", progress_bar=True).to(device)
 rate = 44100
 print('loaded voice_clone')
 
 def voice_clone(input: str, speaker: str):
-    print(f'loaded voice_clone, model path: {PATH} , speaker path: {speaker}')
-    tts.tts_to_file(text=input, file_path="../clone_ouput/voice_clone.wav",  language="en", speaker_wav=speaker)
-    return os.path.abspath("voice_clone.wav")
+    file_output = os.path.abspath("./clone_output/voice_clone.wav")
+    print(f'loaded voice_clone speaker path: {speaker} , file_output: {file_output}')
+    # speech_output = tts.tts(text=input, language="en", speaker_wav=speaker)
+    tts.tts_to_file(text=input, speaker_wav=speaker, language="en", file_path=file_output)
+    return file_output
+
+
