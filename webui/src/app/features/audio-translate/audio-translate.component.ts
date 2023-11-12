@@ -22,6 +22,7 @@ export class AudioTranslateComponent {
     fileName = '';
     errorMessage = '';
     processing = false;
+    detectedText = '';
     @ViewChild('audioResult') audioResult: ElementRef<HTMLAudioElement> | undefined;
 
     constructor(private http: HttpClient) { }
@@ -37,11 +38,15 @@ export class AudioTranslateComponent {
             formData.append("file", file);
             formData.append("speaker", "khoaspeech");
             const upload$ = this.http.post("/voice-translate", formData, {
-                responseType: 'blob'
+                responseType: 'blob',
+                observe: 'response'
             });
 
             upload$.subscribe({
-                next: (res: any) => { this.playBlob(res); },
+                next: (res: any) => { 
+                    console.info(res); 
+                    this.detectedText = res.headers.get('X-Text'); 
+                    this.playBlob(res.body); },
                 error: (error: any) => {
                     console.log(error)
                     this.errorMessage = error;

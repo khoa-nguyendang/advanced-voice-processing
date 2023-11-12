@@ -25,6 +25,7 @@ export class VoiceCloningComponent {
     fileNameSpeaker = '';
     errorMessage = '';
     processing = false;
+    detectedText = '';
     @ViewChild('audioResult') audioResult: ElementRef<HTMLAudioElement> | undefined;
 
     constructor(private http: HttpClient) { }
@@ -50,7 +51,12 @@ export class VoiceCloningComponent {
         });
 
         upload$.subscribe({
-            next: (res: any) => { this.playBlob(res); },
+            next: (res: any) => { 
+                console.info(res);
+                this.detectedText = res.headers.get('X-Text')
+
+                this.playBlob(res); 
+            },
             error: (error: any) => {
                 console.log(error)
                 this.errorMessage = error;

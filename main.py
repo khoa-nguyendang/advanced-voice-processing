@@ -2,7 +2,7 @@ import array
 from pathlib import Path
 import threading
 from entities.request_model import RequestModel
-from fastapi import FastAPI, Request, Form, UploadFile
+from fastapi import FastAPI, Request, Form, UploadFile, Response
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from controllers.text_to_speech import text_to_speech
@@ -25,6 +25,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 tmp_file_dir = os.path.abspath("./voices_uploaded")
@@ -37,7 +38,7 @@ def root():
     return {"message": "Hello World"}
 
 @app.post("/api/voice-translate")
-async def voice_translate_api(request: Request, file: UploadFile = Form(...)):
+async def voice_translate_api(request: Request, response: Response, file: UploadFile = Form(...)):
     print('voice_translate_api triggered')
     
     intput_file = os.path.join(tmp_file_dir, file.filename)
@@ -49,7 +50,9 @@ async def voice_translate_api(request: Request, file: UploadFile = Form(...)):
     textes = voice_translate(nda)
     data = text_to_speech(textes[0])
     print(textes)
-    return FileResponse(data, media_type="audio/wav")
+    response = FileResponse(data, media_type="audio/wav")
+    response.headers["x-text"] = textes[0]
+    return response
 
 @app.post("/api/voice-recognize")
 async def voice_recognize_api(request: Request, file: UploadFile = Form(...)):
@@ -67,7 +70,7 @@ async def voice_recognize_api(request: Request, file: UploadFile = Form(...)):
     
 
 @app.post("/api/voice-clone")
-async def voice_clone_api(request: Request, file: UploadFile = Form(...), speaker: UploadFile = Form(...)):
+async def voice_clone_api(request: Request, response: Response, file: UploadFile = Form(...), speaker: UploadFile = Form(...)):
     print('voice_clone_api triggered')
     #step 1. Store speaker to folder speaker_dir, target audio toi tmp_file_dir.
     intput_file = os.path.join(tmp_file_dir, file.filename)
@@ -87,7 +90,9 @@ async def voice_clone_api(request: Request, file: UploadFile = Form(...), speake
     input = voice_recognize(nda)
     print(f'text from audio : {input}')
     data = voice_clone(input[0], speaker_file)
-    return FileResponse(data, media_type="audio/wav")
+    response = FileResponse(data, media_type="audio/wav")
+    response.headers["x-text"] = input[0]
+    return response
 
 @app.post("/api/text-to-speech")
 def text_to_speech_api(model: RequestModel):

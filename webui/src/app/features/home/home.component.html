@@ -8,14 +8,14 @@
     <div class="container page">
         <h4>Text want to play</h4>
         <br />
-        <textarea style="width: 720px;height: 120px;">{{text_result}}</textarea>
+        <textarea style="width: 720px;height: 120px;" [(ngModel)]="textInput" name="textInput"></textarea>
         <br/>
         <br/>
-        <div *ngIf="processing">
-            <p>Processing...</p>
-        </div>
         <br/>
-        <h4>Result</h4>
+        <br/>
+        <button class="btn btn-primary" (click)="onSubmit($event)" type="button" [disabled]="processing">{{processing ? 'Processing' : 'Start TTS'}}</button>
+        <br/>
+        <br/>
         <br/>
         <audio id="audio_result" controls #audioResult></audio>
         <div *ngIf="errorMessage && errorMessage.length > 0">

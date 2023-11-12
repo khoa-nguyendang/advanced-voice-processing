@@ -33,6 +33,12 @@
         <br/>
         <h4>Result</h4>
         <br/>
+        <div *ngIf="detectedText && detectedText.length > 0">
+            <h5>Detected Text: </h5>
+            <p>{{detectedText}}</p>
+        </div>
+        <br/>
+        <br/>
         <audio id="audio_result" controls #audioResult></audio>
         <div *ngIf="errorMessage && errorMessage.length > 0">
             ERROR: {{errorMessage}}

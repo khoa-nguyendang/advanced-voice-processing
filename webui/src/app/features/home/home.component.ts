@@ -1,6 +1,7 @@
 import { AsyncPipe, CommonModule, NgClass, NgForOf } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { UserService } from "../../core/services/user.service";
 import { ArticleListComponent } from "../../shared/article-helpers/article-list.component";
@@ -16,14 +17,15 @@ import { ShowAuthedDirective } from "../../shared/show-authed.directive";
         AsyncPipe,
         NgForOf,
         ShowAuthedDirective,
-        CommonModule
+        CommonModule,
+        FormsModule
     ],
     standalone: true,
 })
 export class HomeComponent implements OnInit, OnDestroy {
     fileName = '';
     audioContext;
-    text_result = '';
+    textInput = '';
     errorMessage = '';
     processing = false;
     @ViewChild('audioResult') audioResult: ElementRef<HTMLAudioElement> | undefined;
@@ -45,30 +47,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
     }
 
-    onFileSelected(event: any) {
+    onSubmit(event: any) {
+        event.preventDefault();
 
-        const file: File = event.target.files[0];
+        this.processing = true;
+        let body = JSON.stringify({ text : this.textInput});
+        const upload$ = this.http.post("/text-to-speech", body , {
+            headers: {'Content-Type': 'application/json'},
+            responseType: 'blob'
+        });
 
-        if (file) {
-            this.processing = true;
-            this.fileName = file.name;
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("speaker", "khoaspeech");
-            const upload$ = this.http.post("/text-to-speech", formData, {
-                responseType: 'blob'
-            });
-
-            upload$.subscribe({
-                next: (res: any) => { this.playBlob(res); },
-                error: (error: any) => {
-                    console.log(error)
-                    this.errorMessage = error;
-                    this.processing = false;
-                },
-                complete: () => { this.processing = false; }
-            });
-        }
+        upload$.subscribe({
+            next: (res: any) => { this.playBlob(res); },
+            error: (error: any) => {
+                console.log(error)
+                this.errorMessage = error;
+                this.processing = false;
+            },
+            complete: () => { this.processing = false; }
+        });
     }
 
     onErrorReceivingBuffer(err: any) {
