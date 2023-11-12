@@ -47,7 +47,8 @@ export class VoiceCloningComponent {
         formData.append("file", this.audioFile);
         formData.append("speaker", this.speakerAudioFile);
         const upload$ = this.http.post("/voice-clone", formData, {
-            responseType: 'blob'
+            responseType: 'blob',
+            observe: 'response'
         });
 
         upload$.subscribe({
@@ -55,7 +56,7 @@ export class VoiceCloningComponent {
                 console.info(res);
                 this.detectedText = res.headers.get('X-Text')
 
-                this.playBlob(res); 
+                this.playBlob(res.body); 
             },
             error: (error: any) => {
                 console.log(error)
