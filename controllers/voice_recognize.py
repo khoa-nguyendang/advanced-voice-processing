@@ -10,7 +10,7 @@ processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2", local_fi
 model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2", local_files_only=False).to(device)
 sampling_rate = 16000
 model.config.forced_decoder_ids = None
-
+print(model)
 print('loaded voice_recognize')
 def voice_recognize(ndarray) -> str:
     print(f'ndarray shape: {ndarray.shape}')
